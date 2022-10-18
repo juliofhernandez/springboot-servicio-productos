@@ -10,7 +10,7 @@ import com.microservices.springboot.app.productos.models.dao.ProductoDao;
 import com.microservices.springboot.app.productos.models.entity.Product;
 
 @Service
-public class ProductServiceImpl implements IProductService{
+public class ProductServiceImpl implements ProductService{
 
 	@Autowired
 	private ProductoDao productoDao;
