@@ -39,10 +39,21 @@ public class ProductoController {
 		Product product = productService.findById(id);
 //		product.setPort(Integer.parseInt(environment.getProperty("local.server.port")));
 		product.setPort(serverPort);
+		
+//		Sim error
 //		boolean ok = false;
 //		if (!ok) {
 //			throw new RuntimeException("No se pudo cargar el producto!");
 //		}
+		
+//		Sim Timeout
+//		try {
+//			System.out.println("Waiting...");
+//			Thread.sleep(2000L);			
+//		} catch (InterruptedException e) {
+//			e.printStackTrace();
+//		}
+		
 		return product;		
 	}
 }
