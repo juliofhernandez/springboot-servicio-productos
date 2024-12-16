@@ -1,0 +1,6 @@
+/Users/juliohernandez/Development/repositories/springboot-servicio-productos/src/main/java/com/microservices/productos/SpringbootServicioProductosApplication.java
+/Users/juliohernandez/Development/repositories/springboot-servicio-productos/src/main/java/com/microservices/productos/services/ProductService.java
+/Users/juliohernandez/Development/repositories/springboot-servicio-productos/src/main/java/com/microservices/productos/dao/ProductoDao.java
+/Users/juliohernandez/Development/repositories/springboot-servicio-productos/src/main/java/com/microservices/productos/services/ProductServiceImpl.java
+/Users/juliohernandez/Development/repositories/springboot-servicio-productos/src/main/java/com/microservices/productos/controllers/ProductoController.java
+/Users/juliohernandez/Development/repositories/springboot-servicio-productos/src/main/java/com/microservices/productos/models/Product.java
