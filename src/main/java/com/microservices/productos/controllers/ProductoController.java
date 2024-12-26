@@ -23,9 +23,6 @@ public class ProductoController {
 		this.productService = productService;
 	}
 
-	// @Value("${server.port}")
-	// private Integer serverPort;
-
 	@GetMapping("/products")
 	public List<Product> findAll() {
 		return productService.findAll();
@@ -34,31 +31,23 @@ public class ProductoController {
 	@GetMapping("/products/{id}")
 	public ResponseEntity<Product> findById(@PathVariable Long id) throws InterruptedException {
 		if (productService.findById(id).isPresent()) {
-			Product product = productService.findById(id).orElseThrow();
-					
-			//Sim error
-			/* boolean ok = false;
-			if (!ok) {
-				throw new RuntimeException("No se pudo cargar el producto!");
-			} */
-
-			//Sim error
+			//Simulate error
 			if (id == 10L) {
 				throw new RuntimeException("No se pudo cargar el producto!");
 			}
-			
-			if (id == 7L) {
-				TimeUnit.SECONDS.sleep(5L);
-			}
-					
-			//Sim Timeout
-			/* try {
-				System.out.println("Waiting...");
-				Thread.sleep(2000L);			
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			} */
 
+			//Simulate Timeout
+			if (id == 7L) {
+				TimeUnit.SECONDS.sleep(2L);
+			}
+
+			//Simulate SlowCall
+			if (id == 6L) {
+				TimeUnit.SECONDS.sleep(1L);
+			}
+
+			//Comportamiento normal
+			Product product = productService.findById(id).orElseThrow();
 			return ResponseEntity.ok(product);
 		}
 		return ResponseEntity.notFound().build();		
