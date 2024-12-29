@@ -42,4 +42,15 @@ public class ProductServiceImpl implements ProductService {
         });
 	}
 
+	@Override
+	@Transactional
+	public Product save(Product product) {
+		return productoDao.save(product);
+	}
+
+	@Override
+	@Transactional
+	public void deleteById(Long id) {
+		productoDao.deleteById(id);
+	}
 }

@@ -1,5 +1,7 @@
 package com.microservices.productos.models;
 
+import org.hibernate.annotations.CreationTimestamp;
+
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
@@ -23,11 +25,17 @@ public class Product implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
+
 	private String name;
+
+	@Column(nullable = false)
 	private Double price;
+
 	@Column(name = "create_at")
 	@Temporal(TemporalType.DATE)
+	@CreationTimestamp
 	private Date createAt;
+
 	@Transient
 	private Integer port;
 
@@ -52,7 +60,11 @@ public class Product implements Serializable {
 	}
 
 	public void setPrice(Double price) {
-		this.price = price;
+		if (price != null) {
+			this.price = price;
+		} else {
+			this.price = 0.0; // Establecer precio por defecto si no se proporciona
+		}
 	}
 
 	public Date getCreateAt() {

@@ -2,33 +2,38 @@ package com.microservices.productos.controllers;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
-//import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.env.Environment;
+import com.microservices.productos.models.ProductDTOIn;
+import com.microservices.productos.models.ProductDTOOut;
+import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.microservices.productos.models.Product;
 import com.microservices.productos.services.ProductService;
 
 @RestController
+@RequestMapping("/products")
 public class ProductoController {
 
-	final private ProductService productService;
+	private final ProductService productService;
+	private final ModelMapper modelMapper;
+	private final Logger logger = LoggerFactory.getLogger(ProductoController.class);
 
-	public ProductoController(ProductService productService, Environment environment) {
+	public ProductoController(ProductService productService, ModelMapper modelMapper) {
 		this.productService = productService;
+		this.modelMapper = modelMapper;
 	}
 
-	@GetMapping("/products")
+	@GetMapping()
 	public List<Product> findAll() {
 		return productService.findAll();
 	}
 
-	@GetMapping("/products/{id}")
+	@GetMapping("/{id}")
 	public ResponseEntity<Product> findById(@PathVariable Long id) throws InterruptedException {
 		if (productService.findById(id).isPresent()) {
 			//Simulate error
@@ -47,9 +52,40 @@ public class ProductoController {
 			}
 
 			//Comportamiento normal
+			logger.info("Producto encontrado");
 			Product product = productService.findById(id).orElseThrow();
 			return ResponseEntity.ok(product);
 		}
+		logger.info("No se pudo cargar el producto");
 		return ResponseEntity.notFound().build();		
+	}
+
+	@PostMapping()
+	public ResponseEntity<ProductDTOOut> save(@RequestBody ProductDTOIn productDTOIn) {
+		// Usamos un DTO para desacoplar la API pública de la entidad persistente y evitar exponer información innecesaria o sensible
+		Product product = modelMapper.map(productDTOIn, Product.class);
+		ProductDTOOut productDTOOut = modelMapper.map(productService.save(product), ProductDTOOut.class);
+		return ResponseEntity.status(HttpStatus.CREATED).body(productDTOOut);
+	}
+
+	@DeleteMapping("/{id}")
+	public ResponseEntity<Void> delete(@PathVariable Long id) {
+		if (productService.findById(id).isPresent()) {
+			productService.deleteById(id);
+			logger.info("Producto eliminado");
+			return ResponseEntity.ok().build();
+		}
+		logger.info("No se pudo eliminar el producto");
+		return ResponseEntity.notFound().build();
+	}
+
+	@PutMapping("/{id}")
+	public ResponseEntity<ProductDTOOut> update(@PathVariable Long id, @RequestBody ProductDTOIn productDTOIn)  {
+		return productService.findById(id).map(productDB -> {
+			modelMapper.map(productDTOIn, productDB);
+			productDB.setId(id);
+			Product productUpdated = productService.save(productDB);
+			return ResponseEntity.ok(modelMapper.map(productUpdated, ProductDTOOut.class));
+		}).orElse(ResponseEntity.notFound().build());
 	}
 }
