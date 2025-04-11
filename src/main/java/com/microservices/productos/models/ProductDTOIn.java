@@ -1,7 +1,5 @@
 package com.microservices.productos.models;
 
-import java.util.Date;
-
 public class ProductDTOIn {
 
 	private String name;

@@ -1,7 +1,0 @@
-com/microservices/productos/SpringbootServicioProductosApplication.class
-com/microservices/productos/services/ProductService.class
-com/microservices/productos/models/Product.class
-com/microservices/productos/dao/ProductoDao.class
-com/microservices/productos/services/ProductServiceImpl.class
-com/microservices/productos/AppConfig.class
-com/microservices/productos/controllers/ProductoController.class

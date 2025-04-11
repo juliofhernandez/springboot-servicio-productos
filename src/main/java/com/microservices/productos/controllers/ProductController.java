@@ -16,25 +16,26 @@ import com.microservices.productos.models.Product;
 import com.microservices.productos.services.ProductService;
 
 @RestController
-@RequestMapping("/products")
-public class ProductoController {
+public class ProductController {
 
 	private final ProductService productService;
 	private final ModelMapper modelMapper;
-	private final Logger logger = LoggerFactory.getLogger(ProductoController.class);
+	private final Logger logger = LoggerFactory.getLogger(ProductController.class);
 
-	public ProductoController(ProductService productService, ModelMapper modelMapper) {
+	public ProductController(ProductService productService, ModelMapper modelMapper) {
 		this.productService = productService;
 		this.modelMapper = modelMapper;
 	}
 
 	@GetMapping()
 	public List<Product> findAll() {
+		logger.info("ProductoController findAll GET request");
 		return productService.findAll();
 	}
 
 	@GetMapping("/{id}")
 	public ResponseEntity<Product> findById(@PathVariable Long id) throws InterruptedException {
+		logger.info("ProductoController findById GET request with id: " + id);
 		if (productService.findById(id).isPresent()) {
 			//Simulate error
 			if (id == 10L) {
@@ -62,6 +63,7 @@ public class ProductoController {
 
 	@PostMapping()
 	public ResponseEntity<ProductDTOOut> save(@RequestBody ProductDTOIn productDTOIn) {
+		logger.info("ProductoController save POST request with productDTOIn: " + productDTOIn);
 		// Usamos un DTO para desacoplar la API pública de la entidad persistente y evitar exponer información innecesaria o sensible
 		Product product = modelMapper.map(productDTOIn, Product.class);
 		ProductDTOOut productDTOOut = modelMapper.map(productService.save(product), ProductDTOOut.class);
@@ -70,6 +72,7 @@ public class ProductoController {
 
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Void> delete(@PathVariable Long id) {
+		logger.info("ProductoController delete DELETE request with id: " + id);
 		if (productService.findById(id).isPresent()) {
 			productService.deleteById(id);
 			logger.info("Producto eliminado");
@@ -81,6 +84,7 @@ public class ProductoController {
 
 	@PutMapping("/{id}")
 	public ResponseEntity<ProductDTOOut> update(@PathVariable Long id, @RequestBody ProductDTOIn productDTOIn)  {
+		logger.info("ProductoController update PUT request with id: " + id + " and productDTOIn: " + productDTOIn);
 		return productService.findById(id).map(productDB -> {
 			modelMapper.map(productDTOIn, productDB);
 			productDB.setId(id);
